@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "salt_hex": "000102030405060708090a0b0c0d0e0f",
+    "pbkdf2_iterations": 100000,
+    "expected_derived_key_hex": "df5e55da4b30cb9bfba0f5cb03133f93fa8f01b1cbdf5d7b5f1348ea6be60ea6",
+    "max_attempts": 3,
+    "lockout_duration_seconds": 300
+  },
+  "execution": {
+    "subprocess_timeout_seconds": 60,
+    "retry_attempts": 2,
+    "safe_mode": false
+  },
+  "logging": {
+    "log_file": "4sm_audit.log",
+    "enable_integrity_chain": true
+  }
+}
