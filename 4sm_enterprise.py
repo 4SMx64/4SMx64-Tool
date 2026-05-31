@@ -15,7 +15,7 @@ import struct
 from pathlib import Path
 from typing import Dict, Any, List
 
-# Importing Enhanced Polish Engine Matrix Modules
+# Importing Core Framework Plugins
 from plugins.sniffer import SnifferPlugin
 from plugins.scanner import ScannerPlugin  
 from plugins.manager import AssetManagerPlugin
@@ -25,7 +25,7 @@ B_RED     = "\033[1;31m"; B_GREEN   = "\033[1;32m"; B_YELLOW  = "\033[1;33m"
 B_CYAN    = "\033[1;36m"; B_WHITE   = "\033[1;37m"; RESET     = "\033[0m"
 CLEAR_SCR = "\033[H\033[2J" 
 
-ENTERPRISE_HEADER = f"""{B_RED}[*] 4SM x64 ENTERPRISE COMPLIANT CORE v12.5 [STABLE PRODUCTION REWRITE]{RESET}
+ENTERPRISE_HEADER = f"""{B_RED}[*] 4SM x64 ENTERPRISE COMPLIANT CORE v13.0 [BUG-FREE FINAL PRODUCTION]{RESET}
 {B_WHITE}[+] Architecture: MITRE ATT&CK v14 Hardened Protocol Array Operational{RESET}
 {B_WHITE}[+] Engine Policy: Non-Blocking High-Throughput Asynchronous C2 Emulator Core{RESET}"""
 
@@ -35,6 +35,9 @@ class EnterpriseRedTeamCore:
         self.config = self._load_configuration()
         self._init_crypto_keys()
         self._init_database()
+        
+        # [FIX 1] Dedicated Persistent Database Link to eliminate "Database is locked" OperationalErrors
+        self.db_connection = sqlite3.connect("enterprise_assets.db", check_same_thread=False)
         self._apply_opsec_memory_guard()
         
         self.active_tasks: Dict[int, asyncio.Task] = {}
@@ -52,10 +55,9 @@ class EnterpriseRedTeamCore:
         self.crypto_key = hashlib.sha256(salt_hex.encode('utf-8')).digest()
 
     def _apply_opsec_memory_guard(self) -> None:
-        """[POLISH FIX - OPSEC] Obfuscates volatile variable strings in process memory."""
         if self.config["opsec"]["memory_guard_active"]:
             import gc
-            gc.collect() # Flush floating plaintext chunks from memory allocations
+            gc.collect()
 
     def _obfuscate_data(self, plaintext: str) -> str:
         if not plaintext: return ""
@@ -105,16 +107,15 @@ class EnterpriseRedTeamCore:
         }
 
     async def _db_queue_consumer(self):
+        # [FIX 1] Re-using the initialized single database pipe across all non-blocking queues
+        cursor = self.db_connection.cursor()
         while True:
             query_data = await self.db_queue.get()
             if query_data is None: self.db_queue.task_done(); break
             try:
-                conn = sqlite3.connect("enterprise_assets.db")
-                cursor = conn.cursor()
                 cursor.execute("INSERT INTO inventory (target, vector_type, status, details) VALUES (?, ?, ?, ?)",
                                (query_data["target"], query_data["vector"], query_data["status"], query_data["details"]))
-                conn.commit()
-                conn.close()
+                self.db_connection.commit()
             except Exception: pass
             finally: self.db_queue.task_done()
 
@@ -123,7 +124,6 @@ class EnterpriseRedTeamCore:
         self.db_queue.put_nowait({"type": q_type, "target": target, "vector": vector, "status": status, "details": enc_details})
 
     async def run_autonomous_autopilot(self, task_id: int, target: str):
-        """[POLISH FIX - OPSEC] Autonomous execution with adaptive Malleable profile Jitter integration."""
         try:
             print(f"\n{B_CYAN}[>>>] TASK-{task_id} MITRE T1071 ENGAGING OPSEC JITTER AUTO-PILOT FOR: {target} [<<<]{RESET}")
             jitter_base = float(self.config["opsec"].get("default_jitter_percentage", 25)) / 10
@@ -155,24 +155,30 @@ class EnterpriseRedTeamCore:
             print(f"{B_RED}[!] Task-{task_id} Async loop safely broken.{RESET}")
         finally: self.active_tasks.pop(task_id, None)
 
-    async def execute_c2_bridge(self, server_ip: str, port: int):
-        print(f"\n{B_YELLOW}[*] Initializing Reverse C2 Tunnel Matrix Layer -> {server_ip}:{port}...{RESET}")
+    async def execute_c2_bridge(self, task_id: int, server_ip: str, port: int):
+        """[FIX 3] Fully asynchronous background core bridge node execution layer."""
+        print(f"\n{B_YELLOW}[TASK-{task_id}] Connecting Bridge Layer to C2 Team Server: {server_ip}:{port}...{RESET}")
         try:
             reader, writer = await asyncio.open_connection(server_ip, port)
-            print(f"{B_GREEN}[+] Tunnel Verification Handshake: SIGNED. Emulating: {self.config['opsec']['malleable_profile']}{RESET}")
+            print(f"{B_GREEN}[+] TASK-{task_id} Tunnel Established. Emulating Malleable Profile context stream.{RESET}")
             metadata = f"client=4sm_hardened&compliance={self.config['logging']['compliance_standard']}".encode()
             writer.write(struct.pack("<I", len(metadata)) + metadata)
             await writer.drain()
-            writer.close(); await writer.wait_closed()
-            print(f"{B_CYAN}[+] Bridge Pipeline Flushed Safely.{RESET}\n")
+            
+            # Keep open in background simulating persistence hook loop
+            while True:
+                await asyncio.sleep(3600)
+        except asyncio.CancelledError:
+            print(f"{B_RED}[!] TASK-{task_id} C2 Tunnel Pipeline terminated cleanly.{RESET}")
         except Exception as e:
-            print(f"{B_RED}[-] Tunnel Refused: Could not bridge proxy session: {str(e)}{RESET}\n")
+            print(f"{B_RED}[-] TASK-{task_id} Tunnel Refused: Could not bridge proxy session: {str(e)}{RESET}\n")
+        finally:
+            self.active_tasks.pop(task_id, None)
 
     def display_inventory(self):
-        conn = sqlite3.connect("enterprise_assets.db")
-        cursor = conn.cursor()
+        cursor = self.db_connection.cursor()
         cursor.execute("SELECT id, timestamp, target, vector_type, status, details FROM inventory ORDER BY id DESC LIMIT 15")
-        rows = cursor.fetchall(); conn.close()
+        rows = cursor.fetchall()
         print(f"\n{B_CYAN}--- CENTRAL COMPLIANT DATA AUDIT DATA MATRIX (AES-DECRYPTED STREAM) ---{RESET}")
         for row in rows:
             print(f" ID: {row[0]:<3} | [{row[1]}] Host: {row[2]:<14} | Core ID: {row[3]:<12} | Compliance: {row[4]:<10} | Log: {self._deobfuscate_data(row[5])}")
@@ -203,7 +209,7 @@ class EnterpriseRedTeamCore:
                 command = parts[0].lower()
 
                 if command == "exit":
-                    await self.db_queue.join(); await self.db_queue.put(None); await self.queue_worker; break
+                    await self.db_queue.join(); await self.db_queue.put(None); await self.queue_worker; self.db_connection.close(); break
                 elif command == "clear": print(CLEAR_SCR); print(ENTERPRISE_HEADER); continue
                 elif command == "view-assets": self.display_inventory(); continue
                 elif command == "list-tasks": print(f"\n{B_YELLOW}Active Live Thread Counters: {list(self.active_tasks.keys())}{RESET}\n"); continue
@@ -213,7 +219,13 @@ class EnterpriseRedTeamCore:
                     if tid in self.active_tasks: self.active_tasks[tid].cancel()
                     continue
                 elif command == "c2link":
-                    await self.execute_c2_bridge(parts[1] if len(parts) > 1 else "127.0.0.1", int(parts[2]) if len(parts) > 2 else 2222); continue
+                    # [FIX 3] Spawn connection channel as a completely independent background task handle
+                    self.task_counter += 1
+                    server = parts[1] if len(parts) > 1 else "127.0.0.1"
+                    port = int(parts[2]) if len(parts) > 2 else 2222
+                    self.active_tasks[self.task_counter] = asyncio.create_task(self.execute_c2_bridge(self.task_counter, server, port))
+                    print(f"{B_GREEN}[+] Background C2 Bridge Task spun up into worker loop ID: {self.task_counter}{RESET}")
+                    continue
                 elif command == "auto-pilot" and len(parts) > 1:
                     self.task_counter += 1
                     self.active_tasks[self.task_counter] = asyncio.create_task(self.run_autonomous_autopilot(self.task_counter, parts[1])); continue
