@@ -1,18 +1,15 @@
 {
-  "auth": {
-    "salt_hex": "000102030405060708090a0b0c0d0e0f",
-    "pbkdf2_iterations": 100000,
-    "expected_derived_key_hex": "df5e55da4b30cb9bfba0f5cb03133f93fa8f01b1cbdf5d7b5f1348ea6be60ea6",
-    "max_attempts": 3,
-    "lockout_duration_seconds": 300
-  },
-  "execution": {
-    "subprocess_timeout_seconds": 60,
-    "retry_attempts": 2,
-    "safe_mode": false
-  },
-  "logging": {
-    "log_file": "4sm_audit.log",
-    "enable_integrity_chain": true
-  }
+    "auth": {
+        "salt_hex": "4f9d2a8b1e7c6d5e3a2b1c0f9e8d7c6b",
+        "pbkdf2_iterations": 100000,
+        "max_attempts": 3,
+        "expected_derived_key_hex": "7be41cc5587747e9b0bf8876483bf9798e3b1c678a1bc19dfb4f3b7ef3908db7"
+    },
+    "logging": {
+        "log_file": "4sm_enterprise_audit.log",
+        "enable_integrity_chain": true
+    },
+    "execution": {
+        "subprocess_timeout_seconds": 30
+    }
 }
