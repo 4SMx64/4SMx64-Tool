@@ -108,7 +108,7 @@ class EnterpriseRedTeamCore:
         }
 
     async def _db_queue_consumer(self):
-        # [FIX 1] Re-using the initialized single database pipe across all non-blocking queues
+
         cursor = self.db_connection.cursor()
         while True:
             query_data = await self.db_queue.get()
@@ -188,7 +188,7 @@ class EnterpriseRedTeamCore:
     def authenticate_operator(self) -> None:
         import getpass
         try:
-            # සරල, පැහැදිලි Plaintext Password සසඳන ලොජික් එකක් (Default: 4smx64)
+
             password = getpass.getpass(f"{B_RED}[enterprise@4smx64]{B_WHITE}# Enterprise Token Authority Challenge: {RESET}").strip()
             
             if password == "4smx64":
@@ -225,7 +225,7 @@ class EnterpriseRedTeamCore:
                     if tid in self.active_tasks: self.active_tasks[tid].cancel()
                     continue
                 elif command == "c2link":
-                    # [FIX 3] Spawn connection channel as a completely independent background task handle
+
                     self.task_counter += 1
                     server = parts[1] if len(parts) > 1 else "127.0.0.1"
                     port = int(parts[2]) if len(parts) > 2 else 2222
