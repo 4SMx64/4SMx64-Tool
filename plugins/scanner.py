@@ -17,7 +17,7 @@ class ScannerPlugin(BasePlugin):
 
     async def _stealth_tcp_handshake(self, ip: str, port: int, timeout: float) -> bool:
         try:
-            # [FIX 4] Half-open limit simulation: Connect and immediately terminate to avoid log footprints
+
             fut = asyncio.open_connection(ip, port)
             reader, writer = await asyncio.wait_for(fut, timeout=timeout)
             writer.close()
