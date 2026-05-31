@@ -186,14 +186,19 @@ class EnterpriseRedTeamCore:
         print(f"{B_CYAN}--------------------------------------------------------------------------------------{RESET}\n")
 
     def authenticate_operator(self) -> None:
-        auth_cfg = self.config["auth"]
         import getpass
         try:
+            # සරල, පැහැදිලි Plaintext Password සසඳන ලොජික් එකක් (Default: 4smx64)
             password = getpass.getpass(f"{B_RED}[enterprise@4smx64]{B_WHITE}# Enterprise Token Authority Challenge: {RESET}").strip()
-            derived_key = hashlib.pbkdf2_hmac('sha256', hashlib.sha256(password.encode()).hexdigest().encode(), bytes.fromhex(auth_cfg["salt_hex"]), auth_cfg["pbkdf2_iterations"]).hex()
-            if hmac.compare_digest(derived_key, auth_cfg["expected_derived_key_hex"]): print(f"{B_GREEN}[+] Access Authority Granted.{RESET}"); time.sleep(0.3)
-            else: print(f"{B_RED}[!] Session Refused: Identity Verification Corrupted.{RESET}"); sys.exit(1)
-        except (KeyboardInterrupt, SystemExit): sys.exit(1)
+            
+            if password == "4smx64":
+                print(f"{B_GREEN}[+] Access Authority Granted.{RESET}")
+                time.sleep(0.3)
+            else:
+                print(f"{B_RED}[!] Session Refused: Identity Verification Corrupted.{RESET}")
+                sys.exit(1)
+        except (KeyboardInterrupt, SystemExit): 
+            sys.exit(1)
 
     async def shell_loop(self):
         print(CLEAR_SCR); print(ENTERPRISE_HEADER)
