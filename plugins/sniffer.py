@@ -33,7 +33,7 @@ class SnifferPlugin(BasePlugin):
         
         try:
             if current_os == "Windows":
-                # [FIX 2] Target precise active local route interface
+ 
                 host_ip = self._get_active_route_ip()
                 print(f"[*] Binding sniffer engine interface to active gateway IP: {host_ip}")
                 raw_socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
