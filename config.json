@@ -7,9 +7,16 @@
     },
     "logging": {
         "log_file": "4sm_enterprise_audit.log",
-        "enable_integrity_chain": true
+        "compliance_standard": "MITRE_ATTACK_v14",
+        "iso_audit_trail": true
+    },
+    "opsec": {
+        "malleable_profile": "RFC_COMPLIANT_HTTP_TRAFFIC",
+        "default_jitter_percentage": 25,
+        "memory_guard_active": true
     },
     "execution": {
-        "subprocess_timeout_seconds": 30
+        "subprocess_timeout_seconds": 30,
+        "max_async_workers": 250
     }
 }
