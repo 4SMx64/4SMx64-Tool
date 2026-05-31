@@ -1,38 +1,36 @@
-# 4SM x64 Enterprise Framework
+# 🛡️ 4SM x64 Enterprise Framework (Hardened Release)
 
-![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows-red?style=flat-proportional)
+![Platform](https://img.shields.io/badge/Platform-Kali%20%7C%20BlackArch%20%7C%20macOS%20%7C%20Windows-red?style=flat-proportional)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Security](https://img.shields.io/badge/Architecture-Hardened%20Production-green)
+![Compliance](https://img.shields.io/badge/Compliance-MITRE%20ATT%26CK%20v14%20%7C%20ISO%2027001-green)
 
-**4SM x64 Enterprise** is an advanced, modular, and asynchronous interactive command-and-control (C2) simulation environment developed for professional threat simulation and network auditing. The framework operates completely native without external dependencies, emphasizing high-throughput concurrent vector processing and automated workflow orchestration.
+**4SM x64 Enterprise** is a hardened, production-grade, asynchronous threat simulation and infrastructure auditing environment. Engineered to bypass classic personal framework limitations, it integrates raw low-level socket handling, structural decoupling, and native platform adaptation rules to simulate real-world threat actors under corporate compliance baselines.
 
-> 🔒 **Repository Status: Private Infrastructure** > This software is intended strictly for authorized security auditing, compliance validation, and infrastructure resilience testing within closed laboratory environments.
-
----
-
-## 🏛️ Core Architectural Highlights
-
-* **Asynchronous Multiplexing Engine:** Powered by a non-blocking `asyncio` event loop capable of executing hundreds of independent discovery tasks concurrently without interface degradation.
-* **Thread-Safe DB Write Queue:** Features a centralized asynchronous database consumer layer that eliminates SQLite write collisions (`database is locked` faults) under high concurrent loads.
-* **4SM-Encrypter Encryption Layer:** Implements high-entropy cryptographically protected data-at-rest storage. Sensitive execution logs and host details are obfuscated directly before committing to the relational disk space.
-* **4SM-Validator Hardening:** Strict command tokenization and localized input sanitization patterns preventing shell escaping, command injection loops, and syntax breaking errors.
-* **Dynamic Lifecycle Auto-Pilot:** An autonomous state-machine simulation engine that orchestrates dynamic network footprints, service validation, and mock telemetry binding based on targeted environments.
+> 🔒 **Repository Status: Private Enterprise Infrastructure** > Access and orchestration permissions are limited strictly to authorized compliance engineers, infrastructure auditors, and advanced Red Team training scenarios.
 
 ---
 
-## 📂 Framework Directory Mapping
+## 🚀 Advanced Production Enhancements (Polish Layer)
+
+* **MITRE ATT&CK® Mapping Matrix:** Native execution tracing maps directly to enterprise taxonomies (e.g., **T1046: Network Service Discovery**, **T1071: Application Layer Protocol**).
+* **Cross-Platform Promiscuous Pipeline:** Dynamic runtime OS detection switches seamlessly between Windows **`IOCTL_SIO_RCV_ALL`** and Linux/macOS **`socket.AF_PACKET`** interfaces for reliable low-level packet capture.
+* **OPSEC Jitter & Profile Emulation:** Background worker execution vectors automatically generate cryptographic structural intervals with adaptive time delays (Jitter) and pre-configured registry traffic emulation profiles.
+* **ISO 27001 Cryptographic Audit Trail:** Built-in dynamic HMAC-SHA256 signature checking against an isolated framework salt to verify log integrity in real-time.
+
+---
+
+## 📂 Structural Tree Overview
 
 ```text
 4sm_framework/
 │
-├── config.json          # Hardened Registry, Iteration Vectors & Identity Proofs
-├── 4sm_enterprise.py    # Enterprise Asynchronous Core Engine & Prompt Matrix
-├── dashboard.py         # Standalone SIEM & Cryptographic Integrity Monitor Panel
+├── config.json          # Hardened Profile Registries, Memory Jitter Flags & Salt Matrix
+├── 4sm_enterprise.py    # Main Core Asynchronous Shell, Memory Guard & Process Master
+├── dashboard.py         # Real-time ISO Compliance SIEM Monitor & HMAC Integrity Validator
 │
 └── plugins/
-    ├── __init__.py      # Native initialization package hook
-    ├── base_plugin.py   # Modular Template Interface for Extensible Framework Tools
-    ├── sniffer.py       # 4SM-Sniffer Multi-connection Interception Module
-    ├── scanner.py       # 4SM-NetEye Resilient High-speed Multi-threaded Discovery Tool
+    ├── base_plugin.py   # Isolated Polymorphic Template Class for Modular Upgrades
+    ├── sniffer.py       # 4SM-Sniffer Multi-OS Raw Token Connection Capture Engine
+    ├── scanner.py       # 4SM-NetEye Masscan-Optimized Asynchronous SYN Scan Emulator
     ├── manager.py       # 4SM-AssetManager Secure In-Memory Token Handling Layer
-    └── reporter.py      # 4SM-Reporter Executive Markdown Document Generator Engine
+    └── reporter.py      # 4SM-Reporter Executive Client-Approved Markdown Report Builder
